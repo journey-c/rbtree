@@ -5,13 +5,13 @@ const (
 	black = 1
 )
 
-// CompareCmd return
+// CompareCmd
 //     -1: less
 //      0: equal
 //      1: more
 type CompareCmd func(interface{}, interface{}) int
 
-// RbNode is the red-black tree node
+// RbNode the red-black tree node
 type RbNode struct {
 	K, V interface{}
 
@@ -23,14 +23,12 @@ type RbNode struct {
 	right *RbNode
 }
 
-// RbTree is the structure of red-black tree
+// RbTree the structure of red-black tree
 type RbTree struct {
 	root *RbNode
 	null *RbNode
 
 	cmp CompareCmd
-
-	// cache the bottom left and bottom right nodes
 
 	unique bool
 	size   int
@@ -153,6 +151,7 @@ func (rb *RbTree) Insert(key, value interface{}) {
 		}
 	}
 
+	rb.size++
 	rb.insertFixup(z)
 }
 
@@ -303,6 +302,7 @@ func (rb *RbTree) delete(z *RbNode) {
 	if yOrigninalColor == black {
 		rb.deleteFixup(x)
 	}
+	rb.size--
 }
 
 // Find find nodes by key
