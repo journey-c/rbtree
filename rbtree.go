@@ -36,7 +36,9 @@ type RbTree struct {
 	size   int
 }
 
-// NewRbTree is the function that generates the red-black tree object
+// NewRbTree new
+//  cmp:  method of key comparison
+//  unique: whether to allow duplicate keys
 func NewRbTree(cmp CompareCmd, unique bool) *RbTree {
 	null := &RbNode{
 		color: black,
@@ -100,7 +102,7 @@ func (rb *RbTree) rightRotate(y *RbNode) {
 	y.p = x
 }
 
-// Insert a node
+// Insert insert
 func (rb *RbTree) Insert(key, value interface{}) {
 	if key == nil {
 		return
@@ -258,7 +260,7 @@ func (rb *RbTree) deleteFixup(x *RbNode) {
 	x.color = black
 }
 
-// DeleteByKey is to delete nodes by key.
+// DeleteByKey delete nodes by key.
 // If unique is false, there may be multiple deleted nodes.
 func (rb *RbTree) DeleteByKey(key interface{}) {
 	deleteNodeList := rb.findByKey(key)
@@ -267,7 +269,7 @@ func (rb *RbTree) DeleteByKey(key interface{}) {
 	}
 }
 
-// DeleteByNode is to delete the node directly.
+// DeleteByNode delete the node directly.
 func (rb *RbTree) DeleteByNode(z *RbNode) {
 	rb.delete(z)
 }
@@ -303,6 +305,7 @@ func (rb *RbTree) delete(z *RbNode) {
 	}
 }
 
+// Find find nodes by key
 func (rb *RbTree) Find(key interface{}) []*RbNode {
 	return rb.findByKey(key)
 }
@@ -349,11 +352,12 @@ func (rb *RbTree) findByKey(key interface{}) []*RbNode {
 	return nil
 }
 
+// Size number of nodes
 func (rb *RbTree) Size() int {
 	return rb.size
 }
 
-// returns the first node (in sort order) of the tree.
+// First returns the first node (in sort order) of the tree.
 func (rb *RbTree) First() *RbNode {
 	return rb.first(rb.root)
 }
@@ -366,7 +370,7 @@ func (rb *RbTree) first(node *RbNode) *RbNode {
 	return item
 }
 
-// returns the last node (in sort order) of the tree.
+// Last returns the last node (in sort order) of the tree.
 func (rb *RbTree) Last() *RbNode {
 	return rb.last(rb.root)
 }
@@ -379,7 +383,7 @@ func (rb *RbTree) last(node *RbNode) *RbNode {
 	return item
 }
 
-// returns the next node (in sort order) of the tree.
+// Next returns the next node (in sort order) of the tree.
 func (rb *RbTree) Next(node *RbNode) *RbNode {
 	if node.right != rb.null {
 		return rb.first(node.right)
@@ -398,7 +402,7 @@ func (rb *RbTree) Next(node *RbNode) *RbNode {
 	return parent
 }
 
-// returns the previous node (in sort order) of the tree.
+// Prev returns the previous node (in sort order) of the tree.
 func (rb *RbTree) Prev(node *RbNode) *RbNode {
 	if node.left != rb.null {
 		return rb.last(node.left)
