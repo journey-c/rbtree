@@ -209,7 +209,8 @@ func (rb *RbTree) transplant(u, v *RbNode) {
 }
 
 func (rb *RbTree) deleteFixup(x *RbNode) {
-	for x != rb.root && x.color != black {
+	// if x is red and black, directly change x to black, no need to repair.
+	for x != rb.root && x.color == black {
 		if x == x.p.left {
 			w := x.p.right
 			if w.color == red { // case 1
@@ -221,39 +222,43 @@ func (rb *RbTree) deleteFixup(x *RbNode) {
 			if w.left.color == black && w.right.color == black { // case 2
 				w.color = red
 				x = x.p
-			} else if w.right.color == black { // case 3
-				w.left.color = black
-				w.color = red
-				rb.rightRotate(w)
-				w = x.p.right
+			} else {
+				if w.right.color == black { // case 3
+					w.left.color = black
+					w.color = red
+					rb.rightRotate(w)
+					w = x.p.right
+				}
+				w.color = x.p.color // case 4
+				x.p.color = black
+				w.right.color = black
+				rb.leftRotate(x.p)
+				x = rb.root
 			}
-			w.color = x.p.color // case 4
-			x.p.color = black
-			w.right.color = black
-			rb.leftRotate(x.p)
-			x = rb.root
 		} else {
-			w := x.p.right
+			w := x.p.left
 			if w.color == red { // case 5
 				w.color = black
 				x.p.color = red
 				rb.rightRotate(x.p)
 				w = x.p.left
 			}
-			if w.right.color == black && w.left.color == black { // case 6
+			if w.left.color == black && w.right.color == black { // case 6
 				w.color = red
 				x = x.p
-			} else if w.left.color == black { // case 7
-				w.right.color = black
-				w.color = red
-				rb.leftRotate(w)
-				w = x.p.left
+			} else {
+				if w.left.color == black { // case 7
+					w.right.color = black
+					w.color = red
+					rb.leftRotate(w)
+					w = x.p.left
+				}
+				w.color = x.p.color // case 8
+				x.p.color = black
+				w.left.color = black
+				rb.rightRotate(x.p)
+				x = rb.root
 			}
-			w.color = x.p.color // case 8
-			x.p.color = black
-			w.right.color = black
-			rb.rightRotate(x.p)
-			x = rb.root
 		}
 	}
 	x.color = black
@@ -288,7 +293,7 @@ func (rb *RbTree) delete(z *RbNode) {
 		yOrigninalColor = y.color
 		x = y.right
 		if y.p == z {
-			x.p = z
+			x.p = y
 		} else {
 			rb.transplant(y, y.right)
 			y.right = z.right
@@ -326,7 +331,7 @@ func (rb *RbTree) findByKey(key interface{}) []*RbNode {
 			break
 		}
 	}
-	if z != rb.null {
+	if z != rb.null { // exist
 		var result []*RbNode
 		result = append(result, z)
 		next := z
@@ -363,8 +368,8 @@ func (rb *RbTree) First() *RbNode {
 }
 
 func (rb *RbTree) first(node *RbNode) *RbNode {
-	var item *RbNode
-	for item = node; item.left != rb.null; {
+	item := node
+	for item.left != rb.null {
 		item = item.left
 	}
 	return item
@@ -376,8 +381,8 @@ func (rb *RbTree) Last() *RbNode {
 }
 
 func (rb *RbTree) last(node *RbNode) *RbNode {
-	var item *RbNode
-	for item = node; item.right != rb.null; {
+	item := node
+	for item.right != rb.null {
 		item = item.right
 	}
 	return item

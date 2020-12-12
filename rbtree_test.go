@@ -2,6 +2,7 @@ package rbtree
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
 )
 
@@ -48,22 +49,25 @@ func printTree(rb *RbTree, node *RbNode, layer int) {
 }
 
 func TestRbTree(t *testing.T) {
-	tree := NewRbTree(cmp, false)
+	tree := NewRbTree(cmp, true)
 
-	keyList := []int{10, 3, 17, 7, 1, 0, 10, 12, 4, 5}
-
-	fmt.Printf(colorMake+"=========== INSERT: %v ==========="+colorEnd+"\n", keyList)
-	for _, key := range keyList {
-		tree.Insert(key, key*2)
+	var keyList []int
+	for i := 0; i < 1000000; i++ {
+		key := rand.Int() % 10
+		// fmt.Printf(colorMake+"=========== INSERT: %v ==========="+colorEnd+"\n", key)
+		keyList = append(keyList, key)
+		tree.Insert(key, key)
 	}
-	fmt.Println("level:\t1\t2\t3\t4\t5\t6\t7\t8\t...")
-	printTree(tree, tree.root, 1)
+	// fmt.Println("level:\t1\t2\t3\t4\t5\t6\t7\t8\t...")
+	// printTree(tree, tree.root, 1)
 
 	for i := len(keyList) - 1; i >= 0; i-- {
-		fmt.Printf(colorMake+"=========== DELETE: %d ==========="+colorEnd+"\n", keyList[i])
+		// fmt.Printf(colorMake+"=========== DELETE: %d ==========="+colorEnd+"\n", keyList[i])
 		tree.DeleteByKey(keyList[i])
-		fmt.Println("level:\t1\t2\t3\t4\t5\t6\t7\t8\t...")
-		fmt.Println("Size:", tree.Size())
-		printTree(tree, tree.root, 1)
+		// fmt.Println("level:\t1\t2\t3\t4\t5\t6\t7\t8\t...")
+		// fmt.Println("Size:", tree.Size())
+		// printTree(tree, tree.root, 1)
 	}
+	printTree(tree, tree.root, 1)
+	tree.DeleteByKey(11)
 }
